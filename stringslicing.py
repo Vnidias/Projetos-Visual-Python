@@ -20,3 +20,8 @@ print(ultimonome)
 
 reversed_name = name[::-1]
 print(reversed_name)
+
+website = "http://google.com"
+
+slice = slice(7,-4) #andou 7 para frente e voltou com index negativo 4 para traz
+print(website[slice])
