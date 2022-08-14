@@ -12,3 +12,4 @@ else:
     print("voce e uma crianca")
     
 print("tela jenny")
+print("tela jenny")
