@@ -31,3 +31,5 @@ print(type(b))
 name = "bro code"
 
 print("onde esta a variavel bro:" + str(name.find("bro")))
+
+print("teste")
