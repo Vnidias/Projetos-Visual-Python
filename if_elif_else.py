@@ -10,4 +10,3 @@ elif age < 0:
     print("Voce ainda nao nasceu")
 else:
     print("voce e uma crianca")
-#
