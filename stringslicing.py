@@ -17,3 +17,6 @@ nome, sobrenome, ultimonome = name.split(" ")
 print(nome)
 print(sobrenome)
 print(ultimonome)
+
+reversed_name = name[::-1]
+print(reversed_name)
