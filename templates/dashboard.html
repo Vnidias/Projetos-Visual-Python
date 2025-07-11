@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome, {{ current_user.username }}!</h1>
+        <div class="module-grid">
+            <a href="{{ url_for('employees.index') }}" class="module-card">Employee Management</a>
+            <a href="{{ url_for('attendance.view') }}" class="module-card">Attendance</a>
+            <a href="{{ url_for('reports.view') }}" class="module-card">Monthly Report</a>
+        </div>
+        <a href="{{ url_for('auth.logout') }}" class="logout-link">Logout</a>
+    </div>
+</body>
+</html>

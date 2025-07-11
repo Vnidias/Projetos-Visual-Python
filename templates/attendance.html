@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Attendance - ADP System</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Dashboard CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+    <style>
+        .summary-panel {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .summary-panel h4 {
+            margin-bottom: 10px;
+        }
+        .summary-item {
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+        }
+        .summary-total {
+            margin-top: 10px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- FLASH MESSAGE -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash-message {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="container">
+        <h2 class="page-title">Enter Hours Worked This Week</h2>
+
+        <!-- Week Selector -->
+        <form method="GET" action="/attendance" style="margin-bottom: 20px;">
+            <label for="week_start">Select Week:</label>
+            <input type="date" id="week_start" name="week_start" value="{{ week_start }}">
+            <button type="submit">Load Week</button>
+        </form>
+
+        <!-- Attendance Form -->
+        <form method="POST" action="/save_attendance" id="attendance-form">
+            <table class="week-table">
+                <thead>
+                    <tr>
+                        {% for day in dates %}
+                            <th class="day-name">{{ day | safe }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        {% for date in date_strings %}
+                            <td>
+                                <input type="number" name="{{ date }}" step="0.5" min="0" max="24"
+                                       value="8.0" class="time-input" onchange="updateSummary()"
+                                       oninput="updateSummary()">
+                            </td>
+                        {% endfor %}
+                    </tr>
+                </tbody>
+            </table>
+            <button type="submit" class="save-button">Save Attendance</button>
+        </form>
+
+<!-- ✅ Weekly Summary -->
+<div class="summary-panel">
+    <h3>Weekly Summary</h3>
+    <table class="summary-table">
+        <thead>
+            <tr>
+                <th>Day</th>
+                <th>Date</th>
+                <th>Hours</th>
+            </tr>
+        </thead>
+        <tbody id="summary-body">
+            <!-- Filled by JS -->
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="2"><strong>Total</strong></td>
+                <td id="total-hours">0</td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+
+    </div>
+
+    <!-- Back Button -->
+    <a href="{{ url_for('dashboard.view') }}" class="back-button">← Back</a>
+
+    <!-- Flash + Summary JS -->
+    <script>
+    // Auto-hide flash
+    document.addEventListener("DOMContentLoaded", function () {
+        const flashMessage = document.querySelector(".flash-message");
+        if (flashMessage) {
+            setTimeout(() => {
+                flashMessage.style.transition = "opacity 0.5s ease-out";
+                flashMessage.style.opacity = "0";
+                setTimeout(() => flashMessage.remove(), 500);
+            }, 2000);
+        }
+
+        updateSummary(); // Initialize on load
+    });
+
+    function updateSummary() {
+    const inputs = document.querySelectorAll('.time-input');
+    const dayLabels = document.querySelectorAll('th.day-name');
+    const summaryBody = document.getElementById('summary-body');
+    const totalCell = document.getElementById('total-hours');
+
+    let total = 0;
+    let rows = '';
+
+    inputs.forEach((input, index) => {
+        const hours = parseFloat(input.value);
+        const date = input.name;
+        const day = dayLabels[index]?.innerText.trim();
+
+        if (!isNaN(hours) && hours > 0) {
+            rows += `<tr><td>${day}</td><td>${date}</td><td>${hours.toFixed(1)}</td></tr>`;
+            total += hours;
+        }
+    });
+
+    summaryBody.innerHTML = rows;
+    totalCell.textContent = total.toFixed(1);
+}
+
+    </script>
+
+</body>
+</html>
